@@ -1,4 +1,6 @@
 package ucn;
+import java.util.ArrayList;
+import java.util.Iterator;
 /**
  * Hereda de Usuario y representa a los clientes del sistema
  * 
@@ -7,53 +9,121 @@ package ucn;
  */
 public class Cliente extends Usuario {
 	
-	// El pais del usuario
+	// The client country
 	private String pais;
 	
-	// Los puntos que tiene el usuario
+	// The client points
 	private int puntos;
 	
+	// Thew client shopping cart
+	private ArrayList<Producto> carritoCompras;
+	
 	/**
-	 * Rutina constructora de un cliente
+	 * Construction routine for a client
 	 * 
 	 * @param email:
-	 * 				El email del cliente
+	 * 				The client email
 	 * @param contraseña:
-	 * 				La contraseña del cliente
+	 * 				The client password
 	 * @param nombre:
-	 * 				El nombre del cliente
+	 * 				The client name
 	 * @param pais:
-	 * 				El pais del cliente
+	 * 				The client country
 	 * @param puntos:
-	 * 				Los puntos del cliente
+	 * 				The client points
 	 */
 	public Cliente(String email, String contraseña, String nombre, String pais, int puntos) {
 		super(email, contraseña, nombre);
 		this.pais = pais;
 		this.puntos = puntos;
+		this.carritoCompras = new ArrayList<Producto>();
 	}
 
 	/**
-	 * @return Un String con el pais del cliente
+	 * @return a String with the client country
 	 */
 	public String getPais() {
 		return pais;
 	}
 	
 	/**
-	 * @return Un int con los puntos del cliente
+	 * @return an int with the client points
 	 */
 	public int getPuntos() {
 		return puntos;
 	}
 	
 	/**
-	 * Cambia los puntos de un cliente
+	 * Give poinst to the client
 	 * 
 	 * @param puntos:
-	 * 				Los nuevos puntos del cliente
+	 * 				The amount of points
 	 */
-	public void setPuntos(int puntos) {
-		this.puntos = puntos;
-	}	
+	public void AumentarPuntos(int puntos) {
+		this.puntos += puntos;
+	}
+	
+	/**
+	 * Decrease the points of the client
+	 *  
+	 * @param puntos:
+	 * 				The amount of points
+	 */
+	public void DisminuirPuntos(int puntos) {
+		this.puntos -= puntos;
+	}
+	
+	/**
+	 * Add a product to the shopping cart
+	 * 
+	 * @param producto:
+	 * 				The product
+	 * @param stock:
+	 * 				How many products will be added to the shopping cart
+	 */
+	public void AñadirAlCarrito(Producto producto, int stock) {
+		producto.AumentarStockCarrito(stock);
+		this.carritoCompras.add(producto);
+	}
+	
+	/**
+	 * @return an int with the total price of the shopping cart
+	 */
+	public int getMontoCarritoCompras () {
+		
+		int montoTotal = 0;
+		
+		Iterator<Producto> it = carritoCompras.iterator();
+		
+		while (it.hasNext()) {
+			Producto producto = (Producto)it.next();
+			
+			montoTotal += producto.getPrecio() * producto.getStockCarrito();
+		}
+		
+		return montoTotal;
+	}
+	
+	/**
+	 * Empty the shopping cart
+	 */
+	public void VaciarCarrito () {
+		
+		Iterator<Producto> it = carritoCompras.iterator();
+		
+		while (it.hasNext()) {
+			Producto producto = (Producto)it.next();
+			producto.ResetearStock();
+		}
+		
+		this.carritoCompras.clear();
+	}
+	
+	/**
+	 * @return an String with the client information
+	 */
+	@Override
+	public String deployUsuario () {
+		return ("Email: " + this.getEmail() + "; Nombre: " + this.getNombre() + "; Pais: " + this.pais + "; Puntos: " + this.puntos);
+	}
 }
